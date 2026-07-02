@@ -12,8 +12,12 @@ import { ShareButtons } from "@/components/sections/ShareButtons";
 import { JsonLd } from "@/components/seo/PageSEO";
 
 export async function generateStaticParams() {
-  const posts = await prisma.blogPost.findMany({ select: { slug: true } });
-  return posts.map((p) => ({ slug: p.slug }));
+  try {
+    const posts = await prisma.blogPost.findMany({ select: { slug: true } });
+    return posts.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 async function getPost(slug: string) {

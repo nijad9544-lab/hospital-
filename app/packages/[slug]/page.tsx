@@ -16,8 +16,12 @@ import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { JsonLd } from "@/components/seo/PageSEO";
 
 export async function generateStaticParams() {
-  const packages = await prisma.package.findMany({ select: { slug: true } });
-  return packages.map((p) => ({ slug: p.slug }));
+  try {
+    const packages = await prisma.package.findMany({ select: { slug: true } });
+    return packages.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 async function getPackage(slug: string) {

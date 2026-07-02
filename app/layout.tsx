@@ -33,7 +33,7 @@ export default async function RootLayout({
 }>) {
   const [patient, approvedReviews] = await Promise.all([
     getCurrentPatient(),
-    prisma.review.findMany({ where: { status: "approved" }, select: { rating: true } }),
+    prisma.review.findMany({ where: { status: "approved" }, select: { rating: true } }).catch(() => []),
   ]);
 
   const aggregateRating =

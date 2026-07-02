@@ -4,11 +4,11 @@ import { SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [hospitals, doctors, packages, treatments, posts] = await Promise.all([
-    prisma.hospital.findMany({ where: { status: "approved" }, select: { slug: true } }),
-    prisma.doctor.findMany({ where: { status: "approved" }, select: { slug: true } }),
-    prisma.package.findMany({ select: { slug: true } }),
-    prisma.treatment.findMany({ select: { slug: true } }),
-    prisma.blogPost.findMany({ select: { slug: true } }),
+    prisma.hospital.findMany({ where: { status: "approved" }, select: { slug: true } }).catch(() => []),
+    prisma.doctor.findMany({ where: { status: "approved" }, select: { slug: true } }).catch(() => []),
+    prisma.package.findMany({ select: { slug: true } }).catch(() => []),
+    prisma.treatment.findMany({ select: { slug: true } }).catch(() => []),
+    prisma.blogPost.findMany({ select: { slug: true } }).catch(() => []),
   ]);
 
   const staticRoutes = [

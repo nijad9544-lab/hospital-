@@ -13,11 +13,15 @@ import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { JsonLd } from "@/components/seo/PageSEO";
 
 export async function generateStaticParams() {
-  const doctors = await prisma.doctor.findMany({
-    where: { status: "approved" },
-    select: { slug: true },
-  });
-  return doctors.map((d) => ({ slug: d.slug }));
+  try {
+    const doctors = await prisma.doctor.findMany({
+      where: { status: "approved" },
+      select: { slug: true },
+    });
+    return doctors.map((d) => ({ slug: d.slug }));
+  } catch {
+    return [];
+  }
 }
 
 async function getDoctor(slug: string) {

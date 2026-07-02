@@ -11,8 +11,12 @@ import { Price } from "@/components/ui/Price";
 import { JsonLd } from "@/components/seo/PageSEO";
 
 export async function generateStaticParams() {
-  const treatments = await prisma.treatment.findMany({ select: { slug: true } });
-  return treatments.map((t) => ({ slug: t.slug }));
+  try {
+    const treatments = await prisma.treatment.findMany({ select: { slug: true } });
+    return treatments.map((t) => ({ slug: t.slug }));
+  } catch {
+    return [];
+  }
 }
 
 async function getTreatment(slug: string) {
