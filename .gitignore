@@ -34,3 +34,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/app/generated/prisma
+
+# database
+/prisma/*.db
+/prisma/*.db-journal
+.env
+
+# uploaded medical reports (sensitive, never commit)
+/uploads

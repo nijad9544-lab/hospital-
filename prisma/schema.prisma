@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Hospital {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  name          String
+  city          String
+  state         String    @default("Kerala")
+  accreditation String // JSON string[]
+  specialities  String // JSON string[]
+  description   String
+  address       String
+  phone         String
+  email         String    @unique
+  website       String?
+  rating        Float     @default(0)
+  reviewCount   Int       @default(0)
+  imageUrl      String?
+  featured      Boolean   @default(false)
+  passwordHash  String?
+  status        String    @default("approved") // pending | approved | rejected
+  packages      Package[]
+  doctors       Doctor[]
+  hospitalQuotes HospitalQuote[]
+  createdAt     DateTime  @default(now())
+}
+
+model Doctor {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  name          String
+  title         String
+  speciality    String
+  qualification String
+  experience    Int
+  hospitalId    String
+  hospital      Hospital      @relation(fields: [hospitalId], references: [id])
+  languages     String // JSON string[]
+  imageUrl      String?
+  bio           String
+  featured      Boolean       @default(false)
+  email         String?       @unique
+  passwordHash  String?
+  status        String        @default("approved") // pending | approved | rejected
+  availability  Availability[]
+}
+
+model Availability {
+  id        String @id @default(cuid())
+  doctorId  String
+  doctor    Doctor @relation(fields: [doctorId], references: [id])
+  dayOfWeek Int // 0 = Sunday .. 6 = Saturday
+  startTime String // "09:00"
+  endTime   String // "17:00"
+}
+
+model Package {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  category    String
+  description String
+  duration    String
+  city        String
+  price       Int
+  currency    String    @default("INR")
+  inclusions  String // JSON string[]
+  itinerary   String // JSON [{day, title, description}]
+  hospitalId  String?
+  hospital    Hospital? @relation(fields: [hospitalId], references: [id])
+  tags        String // JSON string[]
+  featured    Boolean   @default(false)
+  popular     Boolean   @default(false)
+  imageUrl    String?
+  metaTitle   String?
+  metaDesc    String?
+}
+
+model Treatment {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  category    String
+  description String
+  costIndia   Int
+  costUSA     Int?
+  costUK      Int?
+  duration    String
+  hospitals   String // JSON string[]
+  content     String
+  faqs        String // JSON [{q, a}]
+  metaTitle   String?
+  metaDesc    String?
+}
+
+model Enquiry {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String
+  country    String
+  treatment  String
+  message    String?
+  packageId  String?
+  hospitalId String?
+  status     String   @default("new")
+  createdAt  DateTime @default(now())
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  category    String
+  tags        String // JSON string[]
+  publishedAt DateTime @default(now())
+  authorName  String   @default("CARELET Editorial Team")
+  authorTitle String?
+  authorBio   String?
+  metaTitle   String?
+  metaDesc    String?
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  name        String
+  country     String?
+  treatment   String?
+  rating      Int // 1-5
+  quote       String
+  status      String   @default("pending") // pending | approved | rejected
+  createdAt   DateTime @default(now())
+}
+
+model Patient {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  phone         String?
+  country       String?
+  createdAt     DateTime       @default(now())
+  quoteRequests QuoteRequest[]
+}
+
+model QuoteRequest {
+  id         String          @id @default(cuid())
+  patientId  String
+  patient    Patient         @relation(fields: [patientId], references: [id])
+  treatment  String
+  message    String?
+  status     String          @default("pending") // pending | quoted | closed
+  createdAt  DateTime        @default(now())
+  reports    MedicalReport[]
+  quotes     HospitalQuote[]
+}
+
+model MedicalReport {
+  id             String       @id @default(cuid())
+  quoteRequestId String
+  quoteRequest   QuoteRequest @relation(fields: [quoteRequestId], references: [id])
+  fileName       String
+  storedPath     String
+  mimeType       String
+  size           Int
+  uploadedAt     DateTime     @default(now())
+}
+
+model HospitalQuote {
+  id             String       @id @default(cuid())
+  quoteRequestId String
+  quoteRequest   QuoteRequest @relation(fields: [quoteRequestId], references: [id])
+  hospitalId     String
+  hospital       Hospital     @relation(fields: [hospitalId], references: [id])
+  price          Int
+  currency       String       @default("INR")
+  notes          String?
+  createdAt      DateTime     @default(now())
+}
