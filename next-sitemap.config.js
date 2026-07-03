@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://keralahealth.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.carelet.in',
   generateRobotsTxt: false,
   exclude: ['/api/*'],
 };

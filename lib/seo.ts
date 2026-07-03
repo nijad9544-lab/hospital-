@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const SITE_NAME = "CARELET";
 export const SITE_TAGLINE = "Care Beyond Borders";
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://carelet.in";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.carelet.in";
 
 interface BuildMetadataArgs {
   title: string;
